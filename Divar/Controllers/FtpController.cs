@@ -1,9 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.Net;
-using System.Net.Security;
-using Divar.Models; // برای استفاده از FtpRepository
-
-namespace Divar.Controllers
+﻿namespace Ftp_CRUD.Controllers
 {
     public class FtpController : Controller
     {
@@ -13,37 +8,27 @@ namespace Divar.Controllers
         {
             _ftpRepository = ftpRepository;
         }
-
-        // اکشن برای نمایش تمامی عکس‌های داخل سرور FTP
+        //          /ftp/ListImages
         public async Task<IActionResult> ListImages()
         {
-            List<string> fileList = new List<string>();
-
-            try
-            {
-                fileList = await _ftpRepository.ListImagesAsync();
-            }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError("", $"خطا در دریافت لیست فایل‌ها: {ex.Message}");
-            }
-
+            var fileList = await _ftpRepository.ListImagesAsync();
+            ViewBag.FtpServerUrl = "ftp://127.0.0.1/";
             return View(fileList);
         }
 
         public async Task<IActionResult> GetImage(string fileName)
         {
-            try
-            {
-                byte[] imageData = await _ftpRepository.GetImageAsync(fileName);
-                return File(imageData, "image/jpeg"); // یا "image/png" بسته به نوع فایل
-            }
-            catch (WebException ex)
-            {
-                return BadRequest($"Error: {ex.Message}");
-            }
+            var fileBytes = await _ftpRepository.GetImageAsync(fileName);
+            return File(fileBytes, "image/jpeg"); // یا "image/png" بسته به نوع فایل
         }
 
+
+        //          /ftp/Upload
+        public IActionResult Upload()
+        {
+            return View();
+        }
+       
         [HttpPost]
         public async Task<IActionResult> UploadFile(IFormFile file)
         {
@@ -66,11 +51,15 @@ namespace Divar.Controllers
             return View("Upload");
         }
 
+
+
+
+        //          delete images
         public async Task<IActionResult> DeleteImage(string fileName)
         {
             try
             {
-                await _ftpRepository.DeleteFileAsync(fileName);
+                await _ftpRepository.DeleteImageAsync(fileName);
                 ViewBag.Message = "فایل با موفقیت حذف شد!";
             }
             catch (Exception ex)
@@ -79,6 +68,15 @@ namespace Divar.Controllers
             }
 
             return RedirectToAction("ListImages");
+        }
+
+
+
+        //          Edit images
+        public IActionResult EditImage(string fileName)
+        {
+            ViewBag.FileName = fileName;
+            return View();
         }
 
         [HttpPost]
@@ -92,7 +90,7 @@ namespace Divar.Controllers
 
             try
             {
-                await _ftpRepository.EditFileAsync(oldFileName, newFile);
+                await _ftpRepository.EditImageAsync(oldFileName, newFile);
                 ViewBag.Message = "فایل با موفقیت ویرایش شد!";
             }
             catch (Exception ex)

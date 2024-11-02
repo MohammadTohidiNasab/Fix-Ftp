@@ -1,107 +1,131 @@
-﻿using Microsoft.AspNetCore.Http;
-using System.Collections.Generic;
-using System.IO;
-using System.Net;
-using System.Threading.Tasks;
+﻿using System.Net;
+using System.Net.Security;
 
-namespace Divar.Models
+
+public class FtpRepository : IFtpRepository
 {
-    public class FtpRepository : IFtpRepository
+    private readonly string ftpServerUrl = "ftp://127.0.0.1/";
+    private readonly string ftpUsername = "mohamad";
+    private readonly string ftpPassword = "12345";
+
+    public async Task<List<string>> ListImagesAsync()
     {
-        private readonly string ftpServerUrl = "ftp://127.0.0.1/";
-        private readonly string ftpUsername = "mohamad";
-        private readonly string ftpPassword = "12345";
+        List<string> fileList = new List<string>();
 
-        public async Task<List<string>> ListImagesAsync()
+        FtpWebRequest request = (FtpWebRequest)WebRequest.Create(ftpServerUrl);
+        request.Method = WebRequestMethods.Ftp.ListDirectory;
+        request.Credentials = new NetworkCredential(ftpUsername, ftpPassword);
+        ServicePointManager.ServerCertificateValidationCallback = new RemoteCertificateValidationCallback((sender, certificate, chain, sslPolicyErrors) => true);
+        request.EnableSsl = true;
+
+        using (FtpWebResponse response = (FtpWebResponse)await request.GetResponseAsync())
+        using (StreamReader reader = new StreamReader(response.GetResponseStream()))
         {
-            List<string> fileList = new List<string>();
-
-            FtpWebRequest request = (FtpWebRequest)WebRequest.Create(ftpServerUrl);
-            request.Method = WebRequestMethods.Ftp.ListDirectory;
-            request.Credentials = new NetworkCredential(ftpUsername, ftpPassword);
-            ServicePointManager.ServerCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true;
-            request.EnableSsl = true;
-
-            using (FtpWebResponse response = (FtpWebResponse)await request.GetResponseAsync())
-            using (StreamReader reader = new StreamReader(response.GetResponseStream()))
+            string line;
+            while ((line = reader.ReadLine()) != null)
             {
-                string line;
-                while ((line = reader.ReadLine()) != null)
+                if (line.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase) ||
+                    line.EndsWith(".jpeg", StringComparison.OrdinalIgnoreCase) ||
+                    line.EndsWith(".png", StringComparison.OrdinalIgnoreCase) ||
+                    line.EndsWith(".gif", StringComparison.OrdinalIgnoreCase))
                 {
-                    if (line.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase) ||
-                        line.EndsWith(".jpeg", StringComparison.OrdinalIgnoreCase) ||
-                        line.EndsWith(".png", StringComparison.OrdinalIgnoreCase) ||
-                        line.EndsWith(".gif", StringComparison.OrdinalIgnoreCase))
-                    {
-                        fileList.Add(line);
-                    }
+                    fileList.Add(line);
                 }
             }
-
-            return fileList;
         }
 
-        public async Task<byte[]> GetImageAsync(string fileName)
+        return fileList;
+    }
+
+    public async Task<byte[]> GetImageAsync(string fileName)
+    {
+        string ftpFullPath = ftpServerUrl + fileName;
+        FtpWebRequest request = (FtpWebRequest)WebRequest.Create(ftpFullPath);
+        request.Method = WebRequestMethods.Ftp.DownloadFile;
+        request.Credentials = new NetworkCredential(ftpUsername, ftpPassword);
+        ServicePointManager.ServerCertificateValidationCallback = new RemoteCertificateValidationCallback((sender, certificate, chain, sslPolicyErrors) => true);
+        request.EnableSsl = true;
+
+        using (FtpWebResponse response = (FtpWebResponse)await request.GetResponseAsync())
+        using (Stream ftpStream = response.GetResponseStream())
+        using (MemoryStream ms = new MemoryStream())
         {
-            string ftpFullPath = ftpServerUrl + fileName;
+            await ftpStream.CopyToAsync(ms);
+            return ms.ToArray();
+        }
+    }
 
-            FtpWebRequest request = (FtpWebRequest)WebRequest.Create(ftpFullPath);
-            request.Method = WebRequestMethods.Ftp.DownloadFile;
-            request.Credentials = new NetworkCredential(ftpUsername, ftpPassword);
-            ServicePointManager.ServerCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true;
-            request.EnableSsl = true;
+    public async Task UploadFileAsync(IFormFile file)
+    {
+        string fileName = file.FileName;
+        string ftpUrl = ftpServerUrl + fileName;
 
-            using (FtpWebResponse response = (FtpWebResponse)await request.GetResponseAsync())
-            using (Stream ftpStream = response.GetResponseStream())
-            using (MemoryStream ms = new MemoryStream())
-            {
-                await ftpStream.CopyToAsync(ms);
-                return ms.ToArray();
-            }
+        FtpWebRequest request = (FtpWebRequest)WebRequest.Create(ftpUrl);
+        request.Method = WebRequestMethods.Ftp.UploadFile;
+        request.Credentials = new NetworkCredential(ftpUsername, ftpPassword);
+        ServicePointManager.ServerCertificateValidationCallback = new RemoteCertificateValidationCallback((sender, certificate, chain, sslPolicyErrors) => true);
+        request.EnableSsl = true;
+
+        using (Stream requestStream = await request.GetRequestStreamAsync())
+        {
+            await file.CopyToAsync(requestStream);
         }
 
-        public async Task UploadFileAsync(IFormFile file)
+        using (FtpWebResponse response = (FtpWebResponse)await request.GetResponseAsync())
         {
-            string fileName = file.FileName;
-            string ftpUrl = ftpServerUrl + fileName;
+            Console.WriteLine($"Upload File Complete, status {response.StatusDescription}");
+        }
+    }
 
-            FtpWebRequest request = (FtpWebRequest)WebRequest.Create(ftpUrl);
-            request.Method = WebRequestMethods.Ftp.UploadFile;
-            request.Credentials = new NetworkCredential(ftpUsername, ftpPassword);
-            ServicePointManager.ServerCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true;
-            request.EnableSsl = true;
+    public async Task DeleteImageAsync(string fileName)
+    {
+        string ftpFullPath = ftpServerUrl + fileName;
 
-            using (Stream requestStream = await request.GetRequestStreamAsync())
-            {
-                await file.CopyToAsync(requestStream);
-            }
+        FtpWebRequest request = (FtpWebRequest)WebRequest.Create(ftpFullPath);
+        request.Method = WebRequestMethods.Ftp.DeleteFile;
+        request.Credentials = new NetworkCredential(ftpUsername, ftpPassword);
+        ServicePointManager.ServerCertificateValidationCallback = new RemoteCertificateValidationCallback((sender, certificate, chain, sslPolicyErrors) => true);
+        request.EnableSsl = true;
 
-            using (FtpWebResponse response = (FtpWebResponse)await request.GetResponseAsync())
-            {
-                Console.WriteLine($"Upload File Complete, status {response.StatusDescription}");
-            }
+        using (FtpWebResponse response = (FtpWebResponse)await request.GetResponseAsync())
+        {
+            Console.WriteLine($"Delete File Complete, status {response.StatusDescription}");
+        }
+    }
+
+    public async Task EditImageAsync(string oldFileName, IFormFile newFile)
+    {
+        string newFileName = newFile.FileName;
+        string oldFtpFullPath = ftpServerUrl + oldFileName;
+        string newFtpFullPath = ftpServerUrl + newFileName;
+
+        // حذف فایل قدیمی
+        FtpWebRequest deleteRequest = (FtpWebRequest)WebRequest.Create(oldFtpFullPath);
+        deleteRequest.Method = WebRequestMethods.Ftp.DeleteFile;
+        deleteRequest.Credentials = new NetworkCredential(ftpUsername, ftpPassword);
+        deleteRequest.EnableSsl = true;
+        ServicePointManager.ServerCertificateValidationCallback = new RemoteCertificateValidationCallback((sender, certificate, chain, sslPolicyErrors) => true);
+
+        using (FtpWebResponse deleteResponse = (FtpWebResponse)await deleteRequest.GetResponseAsync())
+        {
+            Console.WriteLine($"Delete Old File Complete, status {deleteResponse.StatusDescription}");
         }
 
-        public async Task DeleteFileAsync(string fileName)
+        // آپلود فایل جدید
+        FtpWebRequest uploadRequest = (FtpWebRequest)WebRequest.Create(newFtpFullPath);
+        uploadRequest.Method = WebRequestMethods.Ftp.UploadFile;
+        uploadRequest.Credentials = new NetworkCredential(ftpUsername, ftpPassword);
+        ServicePointManager.ServerCertificateValidationCallback = new RemoteCertificateValidationCallback((sender, certificate, chain, sslPolicyErrors) => true);
+        uploadRequest.EnableSsl = true;
+
+        using (Stream requestStream = await uploadRequest.GetRequestStreamAsync())
         {
-            string ftpFullPath = ftpServerUrl + fileName;
-
-            FtpWebRequest request = (FtpWebRequest)WebRequest.Create(ftpFullPath);
-            request.Method = WebRequestMethods.Ftp.DeleteFile;
-            request.Credentials = new NetworkCredential(ftpUsername, ftpPassword);
-            ServicePointManager.ServerCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true;
-            request.EnableSsl = true;
-
-            using (FtpWebResponse response = (FtpWebResponse)await request.GetResponseAsync())
-            {
-                Console.WriteLine($"Delete File Complete, status {response.StatusDescription}");
-            }
+            await newFile.CopyToAsync(requestStream);
         }
 
-        public async Task EditFileAsync(string oldFileName, IFormFile newFile)
+        using (FtpWebResponse response = (FtpWebResponse)await uploadRequest.GetResponseAsync())
         {
-            await DeleteFileAsync(oldFileName);
-            await UploadFileAsync(newFile);
+            Console.WriteLine($"Upload File Complete, status {response.StatusDescription}");
         }
     }
 }
