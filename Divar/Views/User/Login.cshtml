@@ -1,0 +1,37 @@
+﻿@model User
+
+<link href="~/css/Login.css" rel="stylesheet" />
+
+<form asp-action="Login" method="post">
+    <div>
+        <label>ایمیل</label>
+        <input type="email" name="email" />
+    </div>
+    <div>
+        <label>رمز عبور</label>
+        <input type="password" name="password" />
+    </div>
+
+    <button type="submit">ورود</button>
+</form>
+
+@if (!ViewData.ModelState.IsValid)
+{
+    <div style="text-align: center;">
+        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+        {
+            <p>@error.ErrorMessage</p>
+        }
+    </div>
+}
+
+<br />
+
+
+
+<b>
+    <h4 style ="text-align: center;">
+        اکانت ندارید؟<a asp-action="Register" asp-controller="User"> ثبت نام </a>
+    </h4>
+</b>
+

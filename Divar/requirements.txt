@@ -1,0 +1,23 @@
+﻿"BCrypt.Net-Next" Version="4.0.3"
+"Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.10"
+"Microsoft.EntityFrameworkCore" Version="8.0.10"
+"Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.10"
+"Microsoft.EntityFrameworkCore.Tools" Version="8.0.10"
+
+
+______________________________________________________________________________________________________________
+______________________________________________________________________________________________________________
+
+ مورد نیاز STORED-PROCEDURE  ساخت 
+
+CREATE PROCEDURE sp_InsertComment
+    @Body NVARCHAR(400),
+    @CreatedDate DATETIME
+AS
+BEGIN
+    INSERT INTO Comments (Body, CreatedDate)
+    VALUES (@Body, @CreatedDate)
+END
+
+دیگه زیادی شده
+تعمیر دسته بندی

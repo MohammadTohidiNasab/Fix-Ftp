@@ -1,0 +1,26 @@
+﻿@model IEnumerable<string>
+
+
+<h2>لیست تصاویر</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>نام تصویر</th>
+            <th>عملیات</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var file in Model)
+        {
+            <tr>
+                <td>@file</td>
+                <td>
+                    <a asp-action="GetImage" asp-route-fileName="@file">نمایش</a>
+                    <a asp-action="EditImage" asp-route-fileName="@file">ویرایش</a>
+                    <a asp-action="DeleteImage" asp-route-fileName="@file" onclick="return confirm('آیا از حذف اطمینان دارید؟');">حذف</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,7 +1,23 @@
-var builder = WebApplication.CreateBuilder(args);
+﻿var builder = WebApplication.CreateBuilder(args);
+
+var cnnString = builder.Configuration.GetConnectionString("DivarConnection");
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddDbContext<DivarDbContext>(options => options.UseSqlServer(cnnString));
+builder.Services.AddMemoryCache();
+builder.Services.AddSession(); // Add Session services to project
+
+// Identity and role management
+builder.Services.AddIdentity<User, IdentityRole>()
+    .AddEntityFrameworkStores<DivarDbContext>()
+    .AddDefaultTokenProviders();
+
+// Register repositories
+builder.Services.AddScoped<IAdminRepository, EfAdminRepository>();
+builder.Services.AddScoped<IAdvertisementRepository, EfAdvertisementRepository>();
+builder.Services.AddScoped<IUserRepository, EfUserRepository>();
+builder.Services.AddScoped<IFtpRepository, FtpRepository>();
 
 var app = builder.Build();
 
@@ -12,12 +28,18 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+else
+{
+    app.UseDeveloperExceptionPage();
+}
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseSession(); // Add session to app
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(

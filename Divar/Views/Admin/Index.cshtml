@@ -1,0 +1,343 @@
+﻿@model Divar.ViewModel.AdminPanel
+@{
+    Layout = null;
+}
+
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+
+<link rel="stylesheet" href="~/css/admin.css">
+
+
+<b>
+
+    <h1 style="text-align: center;">
+        لیست آگهی ها
+    </h1>
+
+
+
+    <div style="text-align: center;">
+        <a asp-controller="Home" asp-action="Index">بازگشت به سایت</a>
+    </div>
+
+
+    <div style="text-align: center; margin-top: 20px;">
+        <!-- دکمه‌ها برای اسکرول -->
+        <button onclick="scrollToSection('users')">لیست کاربران</button>
+        <button onclick="scrollToSection('comments')"> لیست کامنت‌ها</button>
+    </div>
+
+</b>
+
+
+
+
+
+
+
+
+
+
+
+<div id="ads">
+
+    <h1 style="text-align: center;">
+        لیست تمامی آگهی ها
+    </h1>
+
+    <b>
+        <hr />
+        <hr />
+        <hr />        
+        <hr />
+        <hr />
+        <br />
+        <br />
+    </b>
+
+    <div class="similar-ads">
+    <table class="table table-bordered">
+        <tbody>
+            <tr>
+                <td>
+                        <h1 style="text-align: center;">
+                             کتاب ها
+                        </h1>
+                        <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Title</th>
+                                <th>Content</th>
+                                <th>ImageUrl</th>
+                                <th>Price</th>
+                                <th>Created Date</th>
+                                <th>Author</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var ad in Model.Advertisements.Where(a => a.Category == CategoryType.کتاب))
+                            {
+                                <tr>
+                                    <td>@ad.Id</td>
+                                    <td>@ad.Title</td>
+                                    <td>@ad.Content</td>
+                                    <td>@Html.DisplayFor(m => ad.ImageUrl)</td>
+                                    <td>@ad.Price</td>
+                                    <td>@ad.CreatedDate</td>
+                                    <td>@ad.BookAuthor</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                        <h1 style="text-align: center;">
+                              خانه ها
+                        </h1>
+                        <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Title</th>
+                                <th>Content</th>
+                                <th>ImageUrl</th>
+                                <th>Price</th>
+                                <th>Created Date</th>
+                                <th>Size to metter</th>
+                                <th>Address</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var ad in Model.Advertisements.Where(a => a.Category == CategoryType.خانه))
+                            {
+                                <tr>
+                                    <td>@ad.Id</td>
+                                    <td>@ad.Title</td>
+                                    <td>@ad.Content</td>
+                                    <td>@Html.DisplayFor(m => ad.ImageUrl)</td>
+                                    <td>@ad.Price</td>
+                                    <td>@ad.CreatedDate</td>
+                                    <td>@ad.HomeSize</td>
+                                    <td>@ad.HomeAddress</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td>
+
+                        <h1 style="text-align: center;">
+                            موبایل ها
+                        </h1>
+
+                        <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Title</th>
+                                <th>Content</th>
+                                <th>ImageUrl</th>
+                                <th>Price</th>
+                                <th>Created Date</th>
+                                <th>Brand</th>
+                                <th>Sim Cards</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var ad in Model.Advertisements.Where(a => a.Category == CategoryType.موبایل))
+                            {
+                                <tr>
+                                    <td>@ad.Id</td>
+                                    <td>@ad.Title</td>
+                                    <td>@ad.Content</td>
+                                    <td>@Html.DisplayFor(m => ad.ImageUrl)</td>
+                                    <td>@ad.Price</td>
+                                    <td>@ad.CreatedDate</td>
+                                    <td>@ad.MobileBrand</td>
+                                    <td>@ad.SimCardsNumber</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                        <h1 style="text-align: center;">
+                             ماشین ها
+                        </h1>
+
+                        <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Title</th>
+                                <th>Content</th>
+                                <th>ImageUrl</th>
+                                <th>Price</th>
+                                <th>Created Date</th>
+                                <th>Brand</th>
+                                <th>Gearbox</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var ad in Model.Advertisements.Where(a => a.Category == CategoryType.ماشین))
+                            {
+                                <tr>
+                                    <td>@ad.Id</td>
+                                    <td>@ad.Title</td>
+                                    <td>@ad.Content</td>
+                                    <td>@Html.DisplayFor(m => ad.ImageUrl)</td>
+                                    <td>@ad.Price</td>
+                                    <td>@ad.CreatedDate</td>
+                                    <td>@ad.CarBrand</td>
+                                    <td>@ad.GearboxType</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+
+<br />
+<hr />
+    <b>
+        <hr />
+        <hr />
+        <hr />
+        <hr />
+        <hr />
+        <br />
+        <br />
+    </b>
+
+
+
+
+
+
+
+
+
+
+
+<div id="users">
+
+<b>
+    <h1 style="text-align: center;">
+        لیست کاربران
+    </h1>
+</b>
+
+    <div style="text-align: center; margin-top: 20px;">
+        <!-- دکمه‌ها برای اسکرول -->
+        <button onclick="scrollToSection('ads')">لیست آگهی‌ها</button>
+        <button onclick="scrollToSection('comments')"> لیست کامنت‌ها</button>
+    </div>
+
+<table>
+    <thead>
+        <tr>
+            <th>Id "click for delete User"</th>
+            <th>FirstName</th>
+            <th>LastName</th>
+            <th>Email</th>
+            <th>PhoneNumber</th>
+            <th>PasswordHash</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var usr in Model.Users)
+        {
+            <tr>
+                <td><a asp-action="DeleteUser" asp-route-id="@usr.Id"> @usr.Id</a></td>
+                <td>@usr.FirstName</td>
+                <td>@usr.LastName</td>
+                <td>@usr.Email</td>
+                <td>@usr.PhoneNumber</td>
+                <td>@usr.PasswordHash</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+</div>
+
+
+
+
+
+<br />
+<hr />
+    <b>
+        <hr />
+        <hr />
+        <hr />
+        <hr />
+        <hr />
+        <br />
+        <br />
+    </b>
+
+
+<div id="comments">
+
+<b>
+    <h1 style="text-align: center;">
+     لیست کامنت ها 
+    </h1>
+</b>
+
+
+    <div style="text-align: center; margin-top: 20px;">
+        <!-- دکمه‌ها برای اسکرول -->
+        <button onclick="scrollToSection('ads')">لیست آگهی‌ها</button>
+        <button onclick="scrollToSection('users')">لیست کاربران</button>
+    </div>
+
+
+<table>
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>body</th>
+            <th>publish date</th>
+
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var comnt in Model.Comments)
+        {
+            <tr>
+                <td>@comnt.Id</td>
+                <td>@comnt.Body</td>
+                <td>@comnt.CreatedDate</td>
+
+            </tr>
+        }
+    </tbody>
+</table>
+
+</div>
+
+
+<script>
+    function scrollToSection(sectionId) {
+        const section = document.getElementById(sectionId);
+        if (section) {
+            section.scrollIntoView({ behavior: 'smooth' });
+        }
+    }
+</script>

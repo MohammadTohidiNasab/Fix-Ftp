@@ -1,0 +1,19 @@
+﻿@{
+    ViewBag.Title = "ویرایش تصویر";
+}
+
+<h2>ویرایش تصویر @ViewBag.FileName</h2>
+
+<form method="post" asp-action="EditImage" enctype="multipart/form-data">
+    <input type="hidden" name="oldFileName" value="@ViewBag.FileName" />
+    <div>
+        <label for="newFile">فایل جدید:</label>
+        <input type="file" name="newFile" required />
+    </div>
+    <button type="submit">ویرایش فایل</button>
+</form>
+
+@if (!ViewData.ModelState.IsValid)
+{
+    <div>@Html.ValidationSummary()</div>
+}

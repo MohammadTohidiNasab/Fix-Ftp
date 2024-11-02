@@ -1,0 +1,77 @@
+﻿@model User
+
+<link href="~/css/Register.css" rel="stylesheet" />
+
+<b><h1 style="text-align: center;">ثبت نام کاربر</h1></b>
+
+<!-- Loader -->
+<div id="loader" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1000;">
+    <div style="border: 4px solid #f3f3f3; border-top: 4px solid #3498db; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite;"></div>
+</div>
+
+
+<form id="registrationForm" asp-action="Register" method="post">
+    <div class="label-group">
+        <div>
+            <label>نام خانوادگی</label>
+            <input asp-for="LastName" />
+            <span class="error-message" style="display:none;"></span>
+        </div>
+        <div>
+            <label>نام</label>
+            <input asp-for="FirstName" />
+            <span class="error-message" style="display:none;"></span>
+        </div>
+    </div>
+
+    <div class="label-group">
+        <div>
+            <label>ایمیل</label>
+            <input asp-for="Email" type="email"/>
+            <span class="error-message" style="display:none;"></span>
+        </div>
+        <div>
+            <label>شماره تلفن</label>
+            <input asp-for="PhoneNumber" type="number"/>
+            <span class="error-message" style="display:none;"></span>
+        </div>
+    </div>
+
+    <div class="label-group">
+        <div>
+            <label>رمز عبور</label>
+            <input asp-for="PasswordHash" type="password" />
+            <span class="error-message" style="display:none;"></span>
+        </div>
+    </div>
+
+    <button type="submit">ثبت‌نام</button>
+</form>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#registrationForm').on('submit', function (e) {
+            let isValid = true;
+            $('.error-message').text('').hide(); // Reset error messages and hide them
+
+            // Check each input field
+            $(this).find('input').each(function () {
+                let fieldName = $(this).siblings('label').text(); // Get the label text
+                if ($(this).val().trim() === '') {
+                    isValid = false;
+                    $(this).siblings('.error-message').text('پر کردن فیلد ' + fieldName + ' الزامی است  ').show(); // Display error message
+                }
+            });
+
+            // If there are empty fields, prevent form submission
+            if (!isValid) {
+                e.preventDefault(); 
+            } else {
+                // Show loader and prevent multiple submissions
+                $('#loader').show(); // Show loader
+                $(this).find('button[type="submit"]').prop('disabled', true); // Disable submission button
+            }
+        });
+    });
+</script>

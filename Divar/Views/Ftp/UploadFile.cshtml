@@ -1,0 +1,19 @@
+﻿@{
+    ViewData["Title"] = "آپلود تصویر";
+}
+
+<h2>آپلود تصویر</h2>
+
+<form asp-action="UploadFile" method="post" enctype="multipart/form-data">
+    <div class="form-group">
+        <label for="file">انتخاب تصویر:</label>
+        <input type="file" name="file" class="form-control" accept="image/*" />
+    </div>
+    <button type="submit" class="btn btn-primary">آپلود</button>
+</form>
+
+@if (ViewBag.Message != null)
+{
+    <div class="alert alert-success">@ViewBag.Message</div>
+}
+
