@@ -1,4 +1,7 @@
-﻿namespace Divar.Models
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+
+namespace Divar.Models
 {
     public enum CategoryType
     {
@@ -20,9 +23,8 @@
         [MaxLength(500)]
         public string? Content { get; set; }
 
-        public string? ImageUrl { get; set; }
-        public string? ImageUrl2 { get; set; }
-        public string? ImageUrl3 { get; set; }
+        // استفاده از لیستی از تصاویر
+        public ICollection<Image> Images { get; set; } = new List<Image>();
 
         [Required(ErrorMessage = "افزودن قیمت محصول الزامی است")]
         public int Price { get; set; }
@@ -46,4 +48,14 @@
         public string? CarBrand { get; set; }
         public bool? GearboxType { get; set; }
     }
+}
+
+public class Image
+{
+    public int ImageId { get; set; }
+    public string ImageUrl { get; set; } // اینجا آدرس فایل در FTP قرار می‌گیرد
+
+    // ارتباط چند به یک با آگهی
+    public int AdvertisementId { get; set; }
+    public Advertisement Advertisement { get; set; }
 }
