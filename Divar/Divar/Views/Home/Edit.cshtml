@@ -1,0 +1,97 @@
+﻿@model Divar.Models.Advertisement
+
+<h2>Edit Advertisement</h2>
+
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="Id" />
+    <div class="form-group">
+        <label asp-for="Title"></label>
+        <input asp-for="Title" class="form-control" />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Content"></label>
+        <textarea asp-for="Content" class="form-control"></textarea>
+        <span asp-validation-for="Content" class="text-danger"></span>
+    </div>
+
+
+    <div class="form-group">
+        <label asp-for="Price"></label>
+        <input asp-for="Price" class="form-control" type="number" />
+        <span asp-validation-for="Price" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="ImageUrl"></label>
+        <input asp-for="ImageUrl" class="form-control" />
+        <span asp-validation-for="ImageUrl" class="text-danger"></span>
+    </div>
+
+
+
+
+
+
+    @if (Model.Category == Divar.Models.CategoryType.کتاب)
+    {
+        <div class="form-group">
+            <label asp-for="BookAuthor">نویسنده کتاب</label>
+            <input asp-for="BookAuthor" class="form-control" />
+            <span asp-validation-for="BookAuthor" class="text-danger"></span>
+        </div>
+    }
+    @if (Model.Category == Divar.Models.CategoryType.خانه)
+    {
+        <div class="form-group">
+            <label asp-for="HomeSize">اندازه خانه</label>
+            <input asp-for="HomeSize" class="form-control" />
+            <span asp-validation-for="HomeSize" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="HomeAddress">آدرس خانه</label>
+            <input asp-for="HomeAddress" class="form-control" />
+            <span asp-validation-for="HomeAddress" class="text-danger"></span>
+        </div>
+    }
+    @if (Model.Category == Divar.Models.CategoryType.موبایل)
+    {
+        <div class="form-group">
+            <label asp-for="MobileBrand">برند موبایل</label>
+            <input asp-for="MobileBrand" class="form-control" />
+            <span asp-validation-for="MobileBrand" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="SimCardsNumber">تعداد سیم‌کارت‌ها</label>
+            <input asp-for="SimCardsNumber" class="form-control" />
+            <span asp-validation-for="SimCardsNumber" class="text-danger"></span>
+        </div>
+    }
+    @if (Model.Category == Divar.Models.CategoryType.ماشین)
+    {
+        <div class="form-group">
+            <label asp-for="CarBrand">برند ماشین</label>
+            <input asp-for="CarBrand" class="form-control" />
+            <span asp-validation-for="CarBrand" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label>نوع گیربکس</label>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" asp-for="GearboxType" value="true" id="automatic" />
+                <label class="form-check-label" for="automatic">اتوماتیک</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" asp-for="GearboxType" value="false" id="manual" />
+                <label class="form-check-label" for="manual">دنده‌ای</label>
+            </div>
+            <span asp-validation-for="GearboxType" class="text-danger"></span>
+        </div>
+    }
+
+
+
+
+
+    <button type="submit" class="btn btn-primary">ذخیره</button>
+</form> 

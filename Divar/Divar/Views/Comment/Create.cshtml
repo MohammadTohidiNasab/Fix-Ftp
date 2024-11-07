@@ -1,0 +1,16 @@
+﻿@model Divar.Models.Comment
+
+<h2>اضافه کردن کامنت</h2>
+
+<form asp-action="Create" method="post">
+    <div class="form-group">
+        <label asp-for="Body"></label>
+        <textarea asp-for="Body" class="form-control" style="height: 150px; resize: none;"></textarea>
+        <span asp-validation-for="Body" class="text-danger"></span>
+    </div>
+
+    <div style="text-align: center; margin-top: 20px;">
+        <button type="submit" class="btn btn-success" style="margin-top: 10px;">اضافه کردن</button>
+        <a asp-action="Index" class="btn btn-secondary" style="margin-top: 10px; margin-left: 10px;">بازگشت به لیست</a>
+    </div>
+</form>

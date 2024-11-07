@@ -1,0 +1,30 @@
+﻿@model IEnumerable<IdentityRole>
+
+<h2>لیست نقش‌ها</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>نام نقش</th>
+            <th>ویرایش</th>
+            <th>حذف</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var role in Model)
+        {
+            <tr>
+                <td>@role.Name</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@role.Id">ویرایش</a>
+                </td>
+                <td>
+                    <a asp-action="Delete" asp-route-id="@role.Id">حذف</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-action="Create" class="btn btn-primary">ایجاد نقش جدید</a>
+<a asp-action="ManageRole" class="btn btn-primary">اختصاص نقش به کاربر</a>

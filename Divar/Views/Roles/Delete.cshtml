@@ -1,0 +1,11 @@
+﻿@model IdentityRole
+
+<h2>حذف نقش</h2>
+
+<p>آیا مطمئن هستید که می‌خواهید این نقش را حذف کنید: @Model.Name؟</p>
+
+<form asp-action="Delete" method="post">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">حذف</button>
+    <a asp-action="List" class="btn btn-secondary">لغو</a>
+</form>

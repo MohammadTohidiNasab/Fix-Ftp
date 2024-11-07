@@ -1,0 +1,43 @@
+﻿@* @model Divar.ViewModel.CreateRoleViewModel
+
+<h2>ایجاد نقش جدید</h2>
+
+<form asp-action="Create" method="post">
+    <div class="form-group">
+        <label for="Name">نام نقش</label>
+        <input type="text" asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">ایجاد</button>
+</form>
+
+<a asp-action="List" class="btn btn-secondary">بازگشت به لیست نقش‌ها</a>
+ *@
+
+
+
+
+
+
+
+
+@model Divar.ViewModel.CreateRoleViewModel
+
+<h2>ایجاد نقش جدید</h2>
+
+<form asp-action="Create" method="post">
+    <div class="form-group">
+        <label for="Name">نام نقش</label>
+        <input type="text" asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">ایجاد</button>
+</form>
+
+<a asp-action="List" class="btn btn-secondary">بازگشت به لیست نقش‌ها</a>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
